@@ -19,11 +19,17 @@ namespace TechnicalTest.Controllers
 
         [EnableCors("AllowAnyOrigin")]
         [HttpGet("/avatar")]
-        public async Task<IActionResult> GetProfileImage([FromQuery] string userIdentifier)
+        public async Task<IActionResult> GetProfileImage([FromQuery] string? userIdentifier)
         {
-            var url = string.Empty;
-            var lastCharacter = GetLastCharacter(userIdentifier);
-            switch (lastCharacter) {
+            var url = $"https://api.dicebear.com/8.x/pixel-art/png?seed=default&size=150";
+            if (string.IsNullOrEmpty(userIdentifier))
+            {
+                return Ok(new { URL = url });
+            }
+
+            var lastCharacter = userIdentifier.Last().ToString();
+            switch (lastCharacter)
+            {
                 case "6":
                 case "7":
                 case "8":
@@ -52,8 +58,7 @@ namespace TechnicalTest.Controllers
                         char firstVowel = vowelMatch.Value[0];
                         url = $"https://api.dicebear.com/8.x/pixel-art/png?seed={firstVowel}&size=150"; // Build url from the first vowel
                     }
-
-                    if (Regex.IsMatch(userIdentifier, "[^a-zA-Z0-9]")) // a non-alphanumeric character
+                    else if (Regex.IsMatch(userIdentifier, "[^a-zA-Z0-9]")) // a non-alphanumeric character
                     {
                         Random random = new Random();
                         int randomNumber = random.Next(1, 6);
@@ -63,21 +68,7 @@ namespace TechnicalTest.Controllers
                     break;
             }
 
-            if (string.IsNullOrEmpty(url))
-            {
-                url = $"https://api.dicebear.com/8.x/pixel-art/png?seed=default&size=150";
-            }
-
             return Ok(new { URL = url });
-        }
-
-        private string GetLastCharacter(string userIdentifier) {
-            if (string.IsNullOrEmpty(userIdentifier))
-            {
-                return string.Empty;
-            }
-
-            return userIdentifier.Last().ToString();
         }
     }
 }
