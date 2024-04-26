@@ -53,10 +53,11 @@ namespace TechnicalTest.Controllers
                         url = $"https://api.dicebear.com/8.x/pixel-art/png?seed={firstVowel}&size=150"; // Build url from the first vowel
                     }
 
-                    if (Regex.IsMatch(userIdentifier, "[^a-zA-Z0-9]")) // non-alphanumeric character
+                    if (Regex.IsMatch(userIdentifier, "[^a-zA-Z0-9]")) // a non-alphanumeric character
                     {
                         Random random = new Random();
-                        url = $"https://api.dicebear.com/8.x/pixel-art/png?seed={random.Next()}&size=150";
+                        int randomNumber = random.Next(1, 6);
+                        url = $"https://api.dicebear.com/8.x/pixel-art/png?seed={randomNumber}&size=150";
                     }
 
                     break;
