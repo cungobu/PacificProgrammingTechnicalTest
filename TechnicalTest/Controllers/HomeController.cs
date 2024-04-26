@@ -52,11 +52,9 @@ namespace TechnicalTest.Controllers
                     break;
 
                 default:
-                    var vowelMatch = Regex.Match(userIdentifier, "[aeiou]");
-                    if (vowelMatch.Success) // at least one vowel character
+                    if (Regex.IsMatch(userIdentifier, "[aeiou]")) // at least one vowel character
                     {
-                        char firstVowel = vowelMatch.Value[0];
-                        url = $"https://api.dicebear.com/8.x/pixel-art/png?seed={firstVowel}&size=150"; // Build url from the first vowel
+                        url = $"https://api.dicebear.com/8.x/pixel-art/png?seed=vowel&size=150";
                     }
                     else if (Regex.IsMatch(userIdentifier, "[^a-zA-Z0-9]")) // a non-alphanumeric character
                     {
