@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using TechnicalTest.Models;
 
@@ -34,7 +35,21 @@ namespace TechnicalTest.Controllers
                 case "7":
                 case "8":
                 case "9":
-                    url = $"https://my-json-server.typicode.com/ck-pacificdev/tech-test/images/{lastCharacter}";
+                    var myJsonUrl = $"https://my-json-server.typicode.com/ck-pacificdev/tech-test/images/{lastCharacter}";
+                    using (var client = new HttpClient())
+                    {
+                        var response = await client.GetAsync(myJsonUrl);
+                        if (response.IsSuccessStatusCode)
+                        {
+                            string json = await response.Content.ReadAsStringAsync();
+                            var data = JsonSerializer.Deserialize<Image>(json);
+                            if (data != null)
+                            {
+                                url = data.Url;
+                            }
+                        }
+                    }
+
                     break;
 
                 case "1":
