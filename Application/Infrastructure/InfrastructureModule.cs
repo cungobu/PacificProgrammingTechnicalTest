@@ -1,7 +1,9 @@
 ﻿using Common;
 using Common.AOP;
+using Domain.Repositories;
 using Infrastructure.Contexts;
 using Infrastructure.Core;
+using Infrastructure.Repositories;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure
@@ -25,6 +27,8 @@ namespace Infrastructure
             services.AddScoped(typeof(IDbFactory<>), typeof(DbFactory<>));
             services.AddScoped<Domain.IUnitOfWork>(c => c.GetService<IUnitOfWork<ApplicationDbContext>>());
             services.AddScoped(typeof(IUnitOfWork<ApplicationDbContext>), typeof(UnitOfWork<ApplicationDbContext>));
+            services.AddScoped(typeof(IRepository<>), typeof(RepositoryProxy<>));
+            services.AddScoped(typeof(IReadRepository<>), typeof(ReadRepositoryProxy<>));
 
             services.AddTransient(typeof(Repository<,>));
             services.AddTransient(typeof(ReadRepository<,>));
