@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Cors;
+﻿using Application.Features.Images.Interfaces;
+using AutoMapper;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using TechnicalTest.Models;
@@ -11,11 +12,17 @@ namespace TechnicalTest.Controllers
     [ApiController]
     public class HomeController : ControllerBase
     {
-        private readonly DataContext _dataContext;
+        private readonly IMapper _mapper;
+        private readonly IImageReportService _imageReportService;
+        private readonly IImageCommandService _imageCommandService;
 
-        public HomeController(DataContext dataContext)
+        public HomeController(IMapper mapper,
+                            IImageReportService imageReportService,
+                            IImageCommandService imageCommandService)
         {
-            _dataContext = dataContext;
+            _mapper = mapper;
+            _imageReportService = imageReportService;
+            _imageCommandService = imageCommandService;
         }
 
         [EnableCors("AllowAnyOrigin")]
@@ -42,7 +49,7 @@ namespace TechnicalTest.Controllers
                         if (response.IsSuccessStatusCode)
                         {
                             string json = await response.Content.ReadAsStringAsync();
-                            var data = JsonSerializer.Deserialize<Image>(json);
+                            var data = JsonSerializer.Deserialize<ImageViewModel>(json);
                             if (data != null)
                             {
                                 url = data.Url;
@@ -58,7 +65,7 @@ namespace TechnicalTest.Controllers
                 case "4":
                 case "5":
                     var lastDigit = int.Parse(lastCharacter);
-                    var image = await _dataContext.Images.FirstOrDefaultAsync(img => img.Id == lastDigit);
+                    var image = _imageReportService.Get(lastDigit);
                     if (image != null)
                     {
                         url = image.Url;
