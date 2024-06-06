@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Infrastructure.Configurations
@@ -8,6 +9,7 @@ namespace Infrastructure.Configurations
         public override void Configure(EntityTypeBuilder<Image> builder)
         {
             base.Configure(builder);
+            builder.ToTable("Images");
         }
     }
 }
